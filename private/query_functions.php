@@ -8,13 +8,11 @@ function find_all_employees() {
   return $result;
 }
 
-// This is to query only employees not admins
+// This is to query ONLY employees not admins
 function find_only_employees() {
   global $db;
   $sql = "SELECT * FROM employee ";
   $sql .= "WHERE user_level='employee' ";
-  // TO CHECK IF YOUR QUERY IS WORKING
-  // echo $sql;
   $result = mysqli_query($db, $sql);
   confirm_result_set($result);
   return $result;
@@ -23,7 +21,7 @@ function find_only_employees() {
 function find_employee_by_id($id) {
   global $db;
   $sql = "SELECT * FROM employee ";
-  $sql .= "WHERE employee_id='" . $id . "'";
+  $sql .= "WHERE employee_id='" . db_escape($db, (int)$id) . "'";
   $result = mysqli_query($db, $sql);
   confirm_result_set($result);
   $subject = mysqli_fetch_assoc($result);
@@ -34,7 +32,7 @@ function find_employee_by_id($id) {
 function find_employee_by_username($username) {
   global $db;
   $sql = "SELECT * FROM employee ";
-  $sql .= "WHERE username='" . $username . "'";
+  $sql .= "WHERE username='" . db_escape($db, $username) . "'";
   $result = mysqli_query($db, $sql);
   confirm_result_set($result);
   $employee = mysqli_fetch_assoc($result);
@@ -133,13 +131,13 @@ function insert_employee($employee) {
   $sql = "INSERT INTO employee ";
   $sql .= "(first_name, last_name, user_level, department_initial, email, username, hashed_password) ";
   $sql .= "VALUES (";
-  $sql .= "'" . $employee['first_name'] . "',";
-  $sql .= "'" . $employee['last_name'] . "',";
-  $sql .= "'" . $employee['user_level'] . "',";
-  $sql .= "'" . $employee['department_initial'] . "',";
-  $sql .= "'" . $employee['email'] . "',";
-  $sql .= "'" . $employee['username'] . "',";
-  $sql .= "'" . $hashed_password. "'";
+  $sql .= "'" . db_escape($db, $employee['first_name']) . "',";
+  $sql .= "'" . db_escape($db, $employee['last_name']) . "',";
+  $sql .= "'" . db_escape($db, $employee['user_level']) . "',";
+  $sql .= "'" . db_escape($db, $employee['department_initial']) . "',";
+  $sql .= "'" . db_escape($db, $employee['email']) . "',";
+  $sql .= "'" . db_escape($db, $employee['username']) . "',";
+  $sql .= "'" . $hashed_password . "'";
 
   $sql .= ")";
   $result = mysqli_query($db, $sql);
@@ -165,10 +163,10 @@ function create_user_account($employee) {
   $sql = "INSERT INTO employee ";
   $sql .= "(first_name, last_name, email,  username, hashed_password) ";
   $sql .= "VALUES (";
-  $sql .= "'" . $employee['first_name'] . "',";
-  $sql .= "'" . $employee['last_name'] . "',";
-  $sql .= "'" . $employee['email'] . "',";
-  $sql .= "'" . $employee['username'] . "',";
+  $sql .= "'" . db_escape($db, $employee['first_name']) . "',";
+  $sql .= "'" . db_escape($db, $employee['last_name']) . "',";
+  $sql .= "'" . db_escape($db, $employee['email']) . "',";
+  $sql .= "'" . db_escape($db, $employee['username']) . "',";
   $sql .= "'" . $hashed_password . "'";
   $sql .= ")";
   $result = mysqli_query($db, $sql);
@@ -192,13 +190,13 @@ function update_employee($employee, $id) {
     return $errors;
   }
   $sql = "UPDATE employee SET ";
-  $sql .= "first_name='" . $employee['first_name'] . "',";
-  $sql .= "last_name='" . $employee['last_name'] . "',";
-  $sql .= "user_level='" . $employee['user_level'] . "',";
-  $sql .= "department_initial='" . $employee['department_initial'] . "',";
-  $sql .= "email='" . $employee['email'] . "',";
-  $sql .= "username='" . $employee['username'] . "' ";
-  $sql .= "WHERE employee_id='" . $id . "' ";
+  $sql .= "first_name='" . db_escape($db, $employee['first_name']) . "',";
+  $sql .= "last_name='" . db_escape($db, $employee['last_name']) . "',";
+  $sql .= "user_level='" . db_escape($db, $employee['user_level']) . "',";
+  $sql .= "department_initial='" . db_escape($db, $employee['department_initial']) . "',";
+  $sql .= "email='" . db_escape($db, $employee['email']) . "',";
+  $sql .= "username='" . db_escape($db, $employee['username']) . "' ";
+  $sql .= "WHERE employee_id='" . db_escape($db, (int)$id) . "' ";
   $sql .= "LIMIT 1";
   
   $result = mysqli_query($db, $sql);
@@ -215,7 +213,7 @@ function delete_employee($id) {
   global $db;
 
   $sql = "DELETE FROM employee ";
-  $sql .= "WHERE employee_id='" . $id . "' ";
+  $sql .= "WHERE employee_id='" . db_escape($db, (int)$id) . "' ";
   $sql .= "LIMIT 1";
   $result = mysqli_query($db, $sql);
 
@@ -239,10 +237,22 @@ function find_all_announcements() {
   return $result;
 }
 
+// FINDING ANNOUNCEMENTS AND EMPLOYEE NAME
+function find_announcement_and_employee_name() {
+  global $db;
+  $sql = "SELECT announcement.*, ";
+  $sql .= "employee.employee_id, employee.first_name, ";
+  $sql .= "employee.last_name FROM announcement ";
+  $sql .= "JOIN employee USING(employee_id)";
+  $result = mysqli_query($db, $sql);
+  confirm_result_set($result);
+  return $result;
+}
+
 function find_announcement_by_id($id) {
   global $db;
   $sql = "SELECT * FROM announcement ";
-  $sql .= "WHERE announcement_id='" . $id . "'";
+  $sql .= "WHERE announcement_id='" . db_escape($db, (int)$id) . "'";
   $result = mysqli_query($db, $sql);
   confirm_result_set($result);
   $subject = mysqli_fetch_assoc($result);
@@ -255,8 +265,8 @@ function insert_announcement($announcement) {
   $sql = "INSERT INTO announcement ";
   $sql .= "(announcement, employee_id) ";
   $sql .= "VALUES (";
-  $sql .= "'" . $announcement['announcement'] . "',";
-  $sql .= "'" . $announcement['employee_id'] . "'";
+  $sql .= "'" . db_escape($db, $announcement['announcement']) . "',";
+  $sql .= "'" . db_escape($db, $announcement['employee_id']) . "'";
   $sql .= ")";
 
   $result = mysqli_query($db, $sql);
@@ -266,31 +276,12 @@ function insert_announcement($announcement) {
   } else {
     // IF THE INSERT FAILED
     echo mysqli_error($db);
+    var_dump($sql);
     db_disconnect($db);
     exit;
   }
 }
 
-function create_new_announcement($announcement) {
-  global $db;
-
-  $sql = "INSERT INTO announcement ";
-  $sql .= "(announcement) ";
-  $sql .= "VALUES (";
-  $sql .= "'" . $announcement['announcement'] . "' ";
-  $sql .= ")";
-  $result = mysqli_query($db, $sql);
-  
-  // FOR INSERT STATEMENTS INSERT RETURNS TRUE/FALSE
-  if($result)  {
-    return true;
-  } else {
-    // IF THE INSERT FAILED
-    echo mysqli_error($db);
-    db_disconnect($db);
-    exit;
-  }
-}
 
 // THIS IS THE IMAGE QUERIES
 

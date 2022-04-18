@@ -56,22 +56,14 @@ is_admin();
             ?>
           </div>
           <hr>
-          <div>
-          <table class="list">
-            <tr>
-              <th>Contact Information</th>
-            </tr>
+          <div class="list">
+            <h2>Contact Information</h2>
             <?php while($employee = mysqli_fetch_assoc($employee_set)) { ?>
-              <tr>
-                <td>
-                <div id="add-employee">
-                  <a class="action" href="<?php echo url_for('/staff/admin/show.php?employee_id=' . h(u($employee['employee_id']))); ?>"> <?php echo h($employee['first_name']) ." ". h($employee['last_name']); ?></a>
-                </div><br>
-                </td>
-              </tr>
+              <div id="add-employee">
+                <a class="action" href="<?php echo url_for('/staff/admin/show.php?employee_id=' . h(u($employee['employee_id']))); ?>"> <?php echo h($employee['first_name']) ." ". h($employee['last_name']); ?></a>
+              </div><br>
             <?php } ?>
-  	      </table>
-
+          </div>
           <?php
             mysqli_free_result($employee_set);
           ?>

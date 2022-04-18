@@ -119,15 +119,16 @@ if(isset($_POST['submit']) && isset($_FILES['file_name'])) {
              </form>
           </div>
           <hr>
-          <div>
-            <h2>Employee Image Display</h2>
+          <h2>Employee Image Display</h2>
+          <div id="images">
+            
             <?php
               $sql = "SELECT * FROM image ";
               $result = mysqli_query($db, $sql);
 
               if(mysqli_num_rows($result) > 0) {
                 while($images = mysqli_fetch_assoc($result)) { ?>
-              <img class="alb" src="uploads/<?= $images['file_name'] ?>">
+              <div id="one-image"><img class="alb" src="uploads/<?= $images['file_name'] ?>"></div>
             <?php }
                 } 
             ?>

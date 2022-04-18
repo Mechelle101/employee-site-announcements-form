@@ -11,22 +11,13 @@ if(is_post_request()) {
   $announcement['announcement_id'] = $_POST['announcement_id'] ?? '';
   $announcement['announcement'] = $_POST['announcement'] ?? '';
   $announcement['employee_id'] = $logged_in_employee ?? '';
-  
-  // CREATING A NEW ANNOUNCEMENT 
-  $sql = "INSERT INTO announcement ";
-  $sql .= "(announcement, employee_id) ";
-  $sql .= "VALUES (";
-  $sql .= "'" . $announcement['announcement'] . "',";
-  $sql .= "'" . $announcement['employee_id'] . "'";
-  $sql .= ")";
 
-  insert_announcement($announcement);
-  $result = mysqli_query($db, $sql);
+  $result = insert_announcement($announcement);
 
   if($result == true) {
     $new_id = mysqli_insert_id($db);
     $_SESSION['message'] = 'You have created your announcement successfully.';
-  
+    redirect_to(url_for('staff/announcements.php'));
   } else {
     echo mysqli_error($db);
     db_disconnect($db);
@@ -50,7 +41,7 @@ $announcement = find_announcement_by_id($id);
     <link rel="shortcut icon" type="image/png" href="../images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
-  <!-- Header -->
+  <!-- Main Header -->
   <body>
     <div id="main-content">
       <header>
@@ -79,15 +70,7 @@ $announcement = find_announcement_by_id($id);
         </aside>
         <!-- Main body -->
         <article id="description">
-          <div>
-            <?php echo display_session_message(); ?>
-            <div class="attributes">
-              <h1>Reminders &amp; Announcements</h1>
-              <p><?php echo h($announcement['announcement']); ?></p>
-            </div>
-            <hr>
-            <h1>Post Your Announcements Here</h1>
-            <!-- Updating the announcement table... Then pulling from that tbl date('F j, Y, g:i a');-->
+        <div>
             <form action="<?php echo url_for('/staff/admin/announcements.php'); ?>" method="post">
               <input type='hidden' id="date" name='date' value="<?php  ?>"><br>
               <label for="announcement">Post Announcement Here</label>
@@ -95,9 +78,29 @@ $announcement = find_announcement_by_id($id);
               <textarea id="announcement" name='announcement' rows="5" cols="30"></textarea><br>
               <button type='submit' name='submit'>Add Comment</button>
             </form>
+            <hr>
+            <!-- This re-displays the message and resubmits the announcement each time you refresh the page -->
+            <?php echo display_session_message(); ?>
+            <div class="attributes">
+              <h1>Reminders &amp; Announcements</h1>
+              <?php
+              $result = find_announcement_and_employee_name();
+
+              if(mysqli_num_rows($result) > 0) {
+                while($announcements = mysqli_fetch_assoc($result)) { ?>
+                <div>
+                  <p><?= $announcements['first_name'] . " " . $announcements['last_name'] . "<br>" . date_format(date_create($announcements['date']), "g:ia \o\\n l F jS\, Y"); ?></p>
+                  <p><?= $announcements['announcement']; ?></p>
+                </div>
+                <hr>
+                <hr>
+                <?php }
+              } ?>
+            </div>
           </div>
         </article> 
       </main>
+      <!-- Footer -->
       <footer id="footer">
         <div id="my-info">
           <h4>Created By</h4>

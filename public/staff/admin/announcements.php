@@ -12,14 +12,12 @@ if(is_post_request()) {
   $announcement['announcement'] = $_POST['announcement'] ?? '';
   $announcement['employee_id'] = $logged_in_employee ?? '';
 
-
   $result = insert_announcement($announcement);
-  //$result = mysqli_query($db, $sql);
 
   if($result == true) {
     $new_id = mysqli_insert_id($db);
     $_SESSION['message'] = 'You have created your announcement successfully.';
-  
+    redirect_to(url_for('staff/admin/announcements.php'));
   } else {
     echo mysqli_error($db);
     db_disconnect($db);
@@ -40,6 +38,7 @@ $announcement = find_announcement_by_id($id);
     <meta charset="utf-8">
     <title>Remarkable Employee Announcements</title>
     <link href="../../stylesheets/public-styles.css" rel="stylesheet">
+    <!-- <script src="../../js/public.js" defer></script> -->
     <link rel="shortcut icon" type="image/png" href="../../images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -74,11 +73,9 @@ $announcement = find_announcement_by_id($id);
         <!--  Main body -->  
         <article id="description">
           <div>
-          <h1>Post Your Announcements Here</h1>
-            <!-- Updating the announcement table... Then pulling from that tbl date('F j, Y, g:i a');-->
             <form action="<?php echo url_for('/staff/admin/announcements.php'); ?>" method="post">
               <input type='hidden' id="date" name='date' value="<?php  ?>"><br>
-              <label for="announcement">Post Announcement Here</label>
+              <label for="announcement">Post Your Announcement Here</label>
               <input type='hidden' name="announcement" value="<?php  ?>"><br>
               <textarea id="announcement" name='announcement' rows="5" cols="30"></textarea><br>
               <button type='submit' name='submit'>Add Comment</button>
@@ -89,28 +86,19 @@ $announcement = find_announcement_by_id($id);
             <div class="attributes">
               <h1>Reminders &amp; Announcements</h1>
               <?php
-              $sqla = "SELECT * FROM announcement ";
-              $resulta = mysqli_query($db, $sqla);
+              $result = find_announcement_and_employee_name();
 
-              $sqle = "SELECT employee_id, first_name, last_name FROM employee ";
-              $resulte = mysqli_query($db, $sqle);
-              var_dump($resulte);
-
-              if(mysqli_num_rows($resulta) > 0) {
-                while($announcements = mysqli_fetch_assoc($resulta)) { ?>
-                    <?= "Date: " . $announcements['date']; ?><br>
-                    <hr>
-                    <?= "Employee: " . $announcements['employee_id']; ?><br>
-                    <hr>
-                    <?= $announcements['announcement']; ?><br>
-                    <hr>
-                    <hr>
-              <?php }
-                } 
-              ?>
-
+              if(mysqli_num_rows($result) > 0) {
+                while($announcements = mysqli_fetch_assoc($result)) { ?>
+                <div>
+                  <p><?= $announcements['first_name'] . " " . $announcements['last_name'] . "<br>" . date_format(date_create($announcements['date']), "g:ia \o\\n l F jS Y"); ?></p>
+                  <p><?= $announcements['announcement']; ?></p>
+                </div>
+                <hr>
+                <hr>
+                <?php }
+              } ?>
             </div>
-            
           </div>
         </article> 
       </main>
