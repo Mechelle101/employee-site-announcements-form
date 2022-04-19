@@ -71,7 +71,7 @@ $announcement = find_announcement_by_id($id);
         <!-- Main body -->
         <article id="description">
         <div>
-            <form action="<?php echo url_for('/staff/admin/announcements.php'); ?>" method="post">
+            <form action="<?php echo url_for('/staff/announcements.php'); ?>" method="post">
               <input type='hidden' id="date" name='date' value="<?php  ?>"><br>
               <label for="announcement">Post Announcement Here</label>
               <input type='hidden' name="announcement" value="<?php  ?>"><br>

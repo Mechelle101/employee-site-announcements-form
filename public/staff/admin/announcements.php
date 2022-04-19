@@ -91,7 +91,7 @@ $announcement = find_announcement_by_id($id);
               if(mysqli_num_rows($result) > 0) {
                 while($announcements = mysqli_fetch_assoc($result)) { ?>
                 <div>
-                  <p><?= $announcements['first_name'] . " " . $announcements['last_name'] . "<br>" . date_format(date_create($announcements['date']), "g:ia \o\\n l F jS Y"); ?></p>
+                  <p><?= $announcements['first_name'] . " " . $announcements['last_name'] . "<br>" . date_format(date_create($announcements['date']), "g:ia \o\\n l F jS, Y"); ?></p>
                   <p><?= $announcements['announcement']; ?></p>
                 </div>
                 <hr>
