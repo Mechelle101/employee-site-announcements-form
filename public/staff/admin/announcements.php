@@ -38,7 +38,7 @@ $announcement = find_announcement_by_id($id);
     <meta charset="utf-8">
     <title>Remarkable Employee Announcements</title>
     <link href="../../stylesheets/public-styles.css" rel="stylesheet">
-    <!-- <script src="../../js/public.js" defer></script> -->
+    <script src="../../js/public.js" defer></script>
     <link rel="shortcut icon" type="image/png" href="../../images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -72,22 +72,23 @@ $announcement = find_announcement_by_id($id);
         
         <!--  Main body -->  
         <article id="description">
-          <div>
+          <div id="announcement-form">
             <form action="<?php echo url_for('/staff/admin/announcements.php'); ?>" method="post">
-              <input type='hidden' id="date" name='date' value="<?php  ?>"><br>
+              <input type='hidden' id="date" name='date' value=""><br>
               <label for="announcement">Post Your Announcement Here</label>
-              <input type='hidden' name="announcement" value="<?php  ?>"><br>
+              <input type='hidden' name="announcement" value=""><br>
               <textarea id="announcement" name='announcement' rows="5" cols="30"></textarea><br>
               <button type='submit' name='submit'>Add Comment</button>
             </form>
             <hr>
             <!-- This re-displays the message and resubmits the announcement each time you refresh the page -->
             <?php echo display_session_message(); ?>
-            <div class="attributes">
+            <div id="display-announcement">
               <h1>Reminders &amp; Announcements</h1>
+
+              <fieldset>
               <?php
               $result = find_announcement_and_employee_name();
-
               if(mysqli_num_rows($result) > 0) {
                 while($announcements = mysqli_fetch_assoc($result)) { ?>
                 <div>
@@ -98,11 +99,12 @@ $announcement = find_announcement_by_id($id);
                 <hr>
                 <?php }
               } ?>
+              </fieldset>
+
             </div>
           </div>
         </article> 
       </main>
-
       <!-- PAGE FOOTER -->
       <footer id="footer">
         <div id="my-info">

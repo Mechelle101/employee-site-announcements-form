@@ -1,9 +1,27 @@
-<?php 
-require_once('../../../private/initialize.php'); 
+<?php
+require_once('../../../private/initialize.php');
 require_login();
 is_admin();
 
+// Get the value and assign it to a local variable
+$id = $_GET['image_id'];
+$image = find_all_images_and_employee_by_image_id($id);
 
+if(is_post_request()) {
+
+  $result = delete_only_image_of_user($id);
+  // $result  = delete_image($id);
+  if($result === true) {
+    $_SESSION['message'] = 'Image was deleted.';
+    echo display_session_message(); 
+    redirect_to(url_for('/staff/admin/images.php'));
+  } else {
+    // the delete failed
+    echo mysqli_error($db);
+    db_disconnect($db);
+    exit;
+  }
+}
 
 ?>
 
@@ -12,12 +30,12 @@ is_admin();
 
   <head>
     <meta charset="utf-8">
-    <title>Remarkable Employee Images</title>
+    <title>Delete Image</title>
     <link href="../../stylesheets/public-styles.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="../../images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
-  <!-- Header -->
+
   <body>
     <div id="main-content">
       <header>
@@ -36,7 +54,7 @@ is_admin();
         <aside id="navigation">
           <nav id="main-nav">
             <ul>
-              <l1><a href="index.php">Admin Home</a></l1>
+              <l1><a href="<?php echo url_for( '/staff/admin/index.php'); ?>">Admin Home</a></l1>
               <l1><a href="announcements.php">Announcements</a></l1>
               <l1><a href="images.php">Images</a></l1>
               <l1><a href="employee_list.php">Employees</a></l1>
@@ -44,28 +62,28 @@ is_admin();
             </ul>
           </nav>
         </aside>
-       <!-- Main body -->
+        <!-- Main Body -->
         <article id="description">
           <div>
             <?php echo display_session_message(); ?>
-            <a href="index.php">&#8592;</a>
-            <?php
-                $sql = "SELECT * FROM image ";
-                $result = mysqli_query($db, $sql);
-
-                if(mysqli_num_rows($result) > 0) {
-                    while($images = mysqli_fetch_assoc($result)) { ?>
-            <div class="alb">
-              <img src="uploads/<?= $images['file_name'] ?>">
+            <h1>Delete Image</h1>
+            <div id="add-employee" id="action">
+              <a class="action" href="<?php echo url_for('staff/admin/images.php'); ?>">Back to Images</a>
             </div>
-            <?php }
-                } 
-            ?>
+          </div>
+          <div id="delete">
+            <div id="image-display"> 
+              <h4>YOU MAY ONLY DELETE IMAGES YOU UPLOADED</h4>            
+              <p>IMAGE CAPTION: <?php echo h($image['caption']); ?></p>
+              <p>UPLOADED BY: <?php echo h($image['first_name']) . " " .  h($image['last_name']); ?></p>
+              <form action="<?php echo url_for('/staff/admin/delete-image.php?image_id=' . h(u($image['image_id']))); ?>" method="POST">
+                <p>Are you sure you want to delete this image?<input type="submit" name="submit" id="delete-employee" value="Delete Image"></p>
+              </form>
+              <img id="one-image" src="../../upload-images/<?= $image['file_name'] ?>">
+            </div>
           </div>
         </article> 
       </main>
-
-      <!-- PAGE FOOTER -->
       <footer id="footer">
         <div id="my-info">
           <h4>Created By</h4>
@@ -80,3 +98,4 @@ is_admin();
     </div>
   </body>
 </html>
+

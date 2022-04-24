@@ -1,5 +1,11 @@
 <?php
 // BELOW ARE THE EMPLOYEE QUERIES
+
+//server completes processing for an operation, 
+//it sends a response message back to the client 
+//with information about that operation.
+use LDAP\Result;
+
 function find_all_employees() {
   global $db;
   $sql = "SELECT * FROM employee ";
@@ -26,7 +32,7 @@ function find_employee_by_id($id) {
   confirm_result_set($result);
   $subject = mysqli_fetch_assoc($result);
   mysqli_free_result($result);
-  return $subject; // return the assoc. array
+  return $subject;
 }
 
 function find_employee_by_username($username) {
@@ -37,7 +43,7 @@ function find_employee_by_username($username) {
   confirm_result_set($result);
   $employee = mysqli_fetch_assoc($result);
   mysqli_free_result($result);
-  return $employee; // return the assoc. array
+  return $employee;
 }
 
 // This function was changed to leave off the username and pw validation
@@ -213,22 +219,14 @@ function delete_employee($id) {
   global $db;
 
   $sql = "DELETE FROM employee ";
-  $sql .= "WHERE employee_id='" . db_escape($db, (int)$id) . "' ";
+  $sql .= "WHERE employee_id=' " . db_escape($db, (int)$id) . "' ";
   $sql .= "LIMIT 1";
   $result = mysqli_query($db, $sql);
 
-  // For DELETE statements, $result is true/false
-  if($result) {
-    return true;
-  } else {
-    // DELETE failed
-    echo mysqli_error($db);
-    db_disconnect($db);
-    exit;
-  }
+  return $result;
 }
 
-// THIS IS THE ANNOUNCEMENT QUERIES
+// THIS IS THE ANNOUNCEMENT QUERIES --may delete this query
 function find_all_announcements() {
   global $db;
   $sql = "SELECT * FROM announcement ";
@@ -282,8 +280,79 @@ function insert_announcement($announcement) {
   }
 }
 
-
 // THIS IS THE IMAGE QUERIES
+function find_image_by_id($id) {
+  global $db;
+  $sql = "SELECT * FROM image ";
+  $sql .= "WHERE image_id='" . db_escape($db, (int)$id) . "'";
+  $result = mysqli_query($db, $sql);
+  confirm_result_set($result);
+  $image = mysqli_fetch_assoc($result);
+  mysqli_free_result($result);
+  return $image; // return the assoc. array
+}
+
+function find_all_images() {
+  global $db;
+  $sql = "SELECT * FROM image ";
+  $result = mysqli_query($db, $sql);
+  confirm_result_set($result);
+  return $result;
+}
+
+function find_all_images_and_employee_names() {
+    global $db;
+    $sql = "SELECT image.*, ";
+    $sql .= "employee.employee_id, employee.first_name, ";
+    $sql .= "employee.last_name FROM image ";
+    $sql .= "JOIN employee USING(employee_id)";
+    $result = mysqli_query($db, $sql);
+    confirm_result_set($result);
+    return $result;
+}
+
+// FINDING ALL IMAGES AND EMPLOYEE WHO UPLOADED
+function find_all_images_and_employee_by_image_id($id) {
+  global $db;
+  $sql = "SELECT Image.image_id, image.caption, image.file_name, image.upload_date, ";
+  $sql .= "employee.employee_id, employee.first_name, ";
+  $sql .= "employee.last_name FROM image ";
+  $sql .= "JOIN employee USING(employee_id) ";
+  $sql .= "WHERE image_id='" . db_escape($db, (int)$id) . "'";
+  $result = mysqli_query($db, $sql);
+
+  confirm_result_set($result);
+  $image = mysqli_fetch_assoc($result);
+  mysqli_free_result($result);
+  return $image; // return the assoc. array
+}
+
+function insert_image($new_image_file_name, $image) {
+  global $db;
+  $sql = "INSERT INTO image ";
+  $sql .= "(file_name, caption, employee_id) ";
+  $sql .= "VALUES (";
+  $sql .= "'" . $new_image_file_name . "',"; //I wonder is i need to protect against injection here?
+  $sql .= "'" . db_escape($db, $image['caption']) . "',";
+  $sql .= "'" . db_escape($db, $image['employee_id']) . "'";
+  $sql .= ")";
+  var_dump($sql); 
+  $result = mysqli_query($db, $sql);
+
+  confirm_result_set($result);
+  return $result;
+}
+
+// DELETE IMAGES BASED ON IMAGE ID AND LOGGED IN USER
+function delete_only_image_of_user($id) {
+  global $db;
+  $sql = "DELETE FROM image ";
+  $sql .= "WHERE image_id='" . db_escape($db, (int)$id) . "' ";
+  $sql .= "AND employee_id='" . $_SESSION['logged_employee_id'] . "' ";
+  $sql .= "LIMIT 1";
+  $result = mysqli_query($db, $sql);
+  return $result;
+}
 
 
 ?>

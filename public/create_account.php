@@ -17,6 +17,13 @@ if(is_post_request()) {
     $new_id = mysqli_insert_id($db);
     redirect_to(url_for('staff/show.php?employee_id=' . $new_employee['employee_id']));
   } else {
+    // I added this array list below to reshow the form values that was entered
+    // but you have to hit the back button to show what was entered.
+    $employee = [];
+    $employee['first_name'] = $_POST['first_name'] ?? '';
+    $employee['last_name'] = $_POST['last_name'] ?? '';
+    $employee['email'] = $_POST['email'] ?? '';
+    $employee['username'] = $_POST['username'] ?? '';
     $errors = $result;
   }
 

@@ -4,23 +4,8 @@ require_login();
 is_admin();
 
 // Get the value and assign it to a local variable
-$id = $_GET['employee_id'];
-$employee = find_employee_by_id($id);
-
-if(is_post_request()) {
-
-  $result = delete_employee($id);
-  if($result === true) {
-    $_SESSION['message'] = 'Employees was deleted.';
-    echo display_session_message(); 
-    redirect_to(url_for('/staff/admin/employee_list.php'));
-  } else {
-    // the delete failed
-    echo mysqli_error($db);
-    db_disconnect($db);
-    exit;
-  }
-}
+$id = $_GET['image_id'] ?? '1';
+$images = find_all_images_and_employee_by_image_id($id);
 
 ?>
 
@@ -29,8 +14,9 @@ if(is_post_request()) {
 
   <head>
     <meta charset="utf-8">
-    <title>Delete Employee</title>
+    <title>Remarkable Employee Info</title>
     <link href="../../stylesheets/public-styles.css" rel="stylesheet">
+    <script src="../../js/public.js" defer></script>
     <link rel="shortcut icon" type="image/png" href="../../images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -65,21 +51,18 @@ if(is_post_request()) {
         <article id="description">
           <div>
             <?php echo display_session_message(); ?>
-            <h1>Delete Employee</h1>
+            <h1>Image Information</h1>
             <div id="add-employee" id="action">
-              <a class="action" href="<?php echo url_for('staff/admin/employee_list.php'); ?>">Back to Employee List</a>
+              <a class="action" href="<?php echo url_for('staff/admin/images.php'); ?>">Back to List</a>
+              <a class="action" href="<?php echo url_for('/staff/admin/delete-image.php?image_id='. h(u($images['image_id']))); ?>">Delete</a>
             </div>
           </div>
-          <div id="delete">
-            <p>Are you sure you want to delete this employee?</p>
-            <p>NAME: <?php echo h($employee['first_name']) . " " .  h($employee['last_name']); ?></p>
-            
-            <form action="<?php echo url_for('/staff/admin/delete.php?employee_id=' . h(u($employee['employee_id']))); ?>" method="POST">
-            <div>
-              <input type="submit" name="submit" id="delete-employee" value="Delete Employee">
+            <div id="image-display"> 
+              <p>IMAGE CAPTION: <?php echo h($images['caption']); ?></p>
+              <p>UPLOADED BY: <?php echo h($images['first_name']) . " " .  h($images['last_name']); ?></p>
+              <p>UPLOADED ON: <?php echo h(date_format(date_create($images['upload_date']), "g:ia \o\\n l F jS, Y")); ?></p>
+              <img id="one-image" src="../../upload-images/<?= $images['file_name'] ?>">
             </div>
-          </form>
-          </div>
         </article> 
       </main>
       <footer id="footer">
@@ -96,4 +79,3 @@ if(is_post_request()) {
     </div>
   </body>
 </html>
-

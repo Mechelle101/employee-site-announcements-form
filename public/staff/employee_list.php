@@ -32,7 +32,7 @@ require_login();
       <main id="page-content">
         <aside id="navigation">
           <nav id="main-nav">
-          <ul>
+            <ul>
               <l1><a href="<?php echo url_for( '/staff/index.php'); ?>"><?php echo $_SESSION['username']; ?> Home</a></l1>
               <l1><a href="announcements.php">Announcements</a></l1>
               <l1><a href="images.php">Images</a></l1>

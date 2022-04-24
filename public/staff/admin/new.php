@@ -80,19 +80,19 @@ if(is_post_request()) {
               <input type="text" id="first_name" name="first_name" value=""><br>
               <br>
               <label for="last_name">Last Name</label><br>
-              <input type="text" id="last_name" name="last_name" value=""><br>
+              <input type="text" id="last_name" name="last_name" value="<?php //echo h($employee['last_name']); ?>"><br>
               <br>
               <label for="user_level">Account Type (admin or employee)</label><br>
-              <input type="text" id="user_level" name="user_level" value=""><br>
+              <input type="text" id="user_level" name="user_level" value="<?php //echo h($employee['user_level']); ?>"><br>
               <br>
               <label for="department_initial">Department (initial)</label><br>
-              <input type="text" id="department_initial" name="department_initial" value=""><br>
+              <input type="text" id="department_initial" name="department_initial" value="<?php //echo h($employee['department_initial']); ?>"><br>
               <br>
               <label for="email">Email</label><br>
-              <input type="text" id="email" name="email" value=""><br>
+              <input type="text" id="email" name="email" value="<?php //echo h($employee['email']); ?>"><br>
               <br>
               <label for="username">Username</label><br>
-              <input type="text" id="username" name="username" value=""><br>
+              <input type="text" id="username" name="username" value="<?php //echo h($employee['username']); ?>"><br>
               <p>Password should be at least 8 characters, 
               <br>include at least one uppercase, lowercase, number, and symbol.</p>
               <label for="password">Password</label><br>

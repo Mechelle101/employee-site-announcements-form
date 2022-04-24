@@ -59,6 +59,7 @@ $employee = find_employee_by_id($id);
           </div>
             <div>
               <div class="attributes">
+                <p>ID: <?php echo h($employee['employee_id']) . " " .  h($employee['last_name']); ?></p>
                 <p>NAME: <?php echo h($employee['first_name']) . " " .  h($employee['last_name']); ?></p>
                 <p>ACCOUNT TYPE: <?php echo h($employee['user_level']); ?></p>
                 <p>DEPARTMENT: <?php echo h($employee['department_initial']); ?></p>

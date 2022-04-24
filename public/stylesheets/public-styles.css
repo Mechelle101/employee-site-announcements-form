@@ -78,6 +78,35 @@ header {
   padding: 20px;
 }
 
+#image-form {
+  max-width: fit-content;
+}
+
+img {
+  border-radius: 25px;
+  padding: 10px;
+  max-width: 100%;
+  max-height: auto;
+}
+
+#images img.zoomed {
+  transform: scale(3.5);
+}
+
+#image-display {
+  margin-top: 20px;
+  max-width: 100%;
+  max-height: auto;
+}
+
+#one-image {
+  border: 5px solid #724a4a;
+  border-radius: 30px;
+  max-width: 400px;
+  max-height: 400px;
+  padding: 10px;
+}
+
 /* .alb {
   display: flex;
   justify-content: center;
@@ -171,6 +200,27 @@ footer {
     grid-template-rows: auto auto auto;
   }
 
+  /* Image display grid */
+  #images fieldset {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  #images fieldset #image1 {
+    grid-column: 1/2;
+    grid-row: 1/2;
+    justify-self: center;
+    align-self: center;
+  }
+
+  #images fieldset #add-employee {
+    grid-column: 1/2;
+    grid-row: 2/3;
+    justify-self: center;
+    align-self: end;
+  }
+
   /* Footer grid */
   footer {
     display: grid;
@@ -191,7 +241,7 @@ footer {
 }
 
 /* FIRST BREAKPOINT 900px */
-@media  screen and (max-width: 900px) {
+@media  screen and (max-width: 1100px) {
   #page-content {
     padding: 0;
     display: grid;
@@ -223,6 +273,7 @@ footer {
   #description {
     grid-column: 2/4;
     grid-row: 1/3;
+    max-width: 800px;
   }
 
   #images {
@@ -253,7 +304,7 @@ footer {
 }
 
 /* SECOND BREAKPOINT 640px */
-@media  screen and (max-width: 640px) {
+@media  screen and (max-width: 800px) {
   
   #page-content {
     padding: 0;
@@ -265,10 +316,6 @@ footer {
   #navigation {
     grid-column: 1/2;
     grid-row: 1/3;
-  }
-
-  #navigation ul {
-    width: 200px;
   }
 
   #navigation a {
@@ -286,12 +333,14 @@ footer {
   #description {
     grid-column: 2/3;
     grid-row: 1/3;
+    max-width: 550px;
   }
 
   #images {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
+    max-width: 300px;
   }
 
   footer {
@@ -314,7 +363,7 @@ footer {
 }
 
 /* LAST BREAKPOINT 400px */
-@media  screen and (max-width: 450px) {
+@media  screen and (max-width: 645px) {
 
   header {
     display: grid;
@@ -375,6 +424,11 @@ footer {
     margin: 20px;
   }
 
+  #display-announcement,
+  #announcement-form {
+    max-width: 400px;
+  }
+
   textarea {
     width: auto;
   }
@@ -383,6 +437,7 @@ footer {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto auto;
+    max-width: 200px;
   }
 
   footer {

@@ -1,19 +1,19 @@
 <?php
-require_once('../../../private/initialize.php');
+require_once('../../private/initialize.php');
 require_login();
-is_admin();
 
 // Get the value and assign it to a local variable
-$id = $_GET['employee_id'];
-$employee = find_employee_by_id($id);
+$id = $_GET['image_id'];
+$image = find_all_images_and_employee_by_image_id($id);
 
 if(is_post_request()) {
 
-  $result = delete_employee($id);
+  $result = delete_only_image_of_user($id);
+  // $result  = delete_image($id);
   if($result === true) {
-    $_SESSION['message'] = 'Employees was deleted.';
+    $_SESSION['message'] = 'Image was deleted.';
     echo display_session_message(); 
-    redirect_to(url_for('/staff/admin/employee_list.php'));
+    redirect_to(url_for('/staff/images.php'));
   } else {
     // the delete failed
     echo mysqli_error($db);
@@ -29,16 +29,16 @@ if(is_post_request()) {
 
   <head>
     <meta charset="utf-8">
-    <title>Delete Employee</title>
-    <link href="../../stylesheets/public-styles.css" rel="stylesheet">
-    <link rel="shortcut icon" type="image/png" href="../../images/favicon.png">
+    <title>Delete Image</title>
+    <link href="../stylesheets/public-styles.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="../images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
     <div id="main-content">
       <header>
-        <a href="<?php echo url_for( 'staff/admin/index.php'); ?>"><img src="../../images/ppl-logo.png" alt="circle logo" width="100" height="100"></a>
+        <a href="<?php echo url_for( 'staff/index.php'); ?>"><img src="../images/ppl-logo.png" alt="circle logo" width="100" height="100"></a>
         <div id="header-content">
           <h1>Remarkable Employees</h1>
           <h4>Where We Come Together As A Team</h4>
@@ -53,7 +53,7 @@ if(is_post_request()) {
         <aside id="navigation">
           <nav id="main-nav">
             <ul>
-              <l1><a href="<?php echo url_for( '/staff/admin/index.php'); ?>">Admin Home</a></l1>
+              <l1><a href="<?php echo url_for('/staff/index.php'); ?>">Admin Home</a></l1>
               <l1><a href="announcements.php">Announcements</a></l1>
               <l1><a href="images.php">Images</a></l1>
               <l1><a href="employee_list.php">Employees</a></l1>
@@ -65,20 +65,21 @@ if(is_post_request()) {
         <article id="description">
           <div>
             <?php echo display_session_message(); ?>
-            <h1>Delete Employee</h1>
+            <h1>Delete Image</h1>
             <div id="add-employee" id="action">
-              <a class="action" href="<?php echo url_for('staff/admin/employee_list.php'); ?>">Back to Employee List</a>
+              <a class="action" href="<?php echo url_for('staff/images.php'); ?>">Back to Images</a><br><br>
             </div>
           </div>
           <div id="delete">
-            <p>Are you sure you want to delete this employee?</p>
-            <p>NAME: <?php echo h($employee['first_name']) . " " .  h($employee['last_name']); ?></p>
-            
-            <form action="<?php echo url_for('/staff/admin/delete.php?employee_id=' . h(u($employee['employee_id']))); ?>" method="POST">
-            <div>
-              <input type="submit" name="submit" id="delete-employee" value="Delete Employee">
+            <div id="image-display"> 
+              <h4>YOU MAY ONLY DELETE IMAGES YOU UPLOADED</h4>
+              <p>IMAGE CAPTION: <?php echo h($image['caption']); ?></p>
+              <p>UPLOADED BY: <?php echo h($image['first_name']) . " " .  h($image['last_name']); ?></p>
+              <form action="<?php echo url_for('/staff/delete-image.php?image_id=' . h(u($image['image_id']))); ?>" method="POST">
+                <p>Are you sure you want to delete this image?<input type="submit" name="submit" id="delete-employee" value="Delete Image"></p>
+              </form>
+              <img id="one-image" src="../upload-images/<?= $image['file_name'] ?>">
             </div>
-          </form>
           </div>
         </article> 
       </main>
